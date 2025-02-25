@@ -508,6 +508,7 @@
       var boosted, cur, diff, digitCount, digits, dist, end, fractionalCount, frame, frames, i, incr, j, mark, numEl, oldValue, start, _base, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref, _results;
       oldValue = this.value;
       fractionalCount = this.getFractionalDigitCount(oldValue, newValue);
+      var needsLeadingZero = (newValue > -1 && newValue < 1);
       if (fractionalCount) {
         newValue = newValue * Math.pow(10, fractionalCount);
         oldValue = oldValue * Math.pow(10, fractionalCount);
@@ -519,6 +520,9 @@
       digitCount = this.getDigitCount(oldValue, newValue);
       digits = [];
       boosted = 0;
+      if (needsLeadingZero) {
+        digits.push([0]); 
+      }
       for (i = _i = 0; 0 <= digitCount ? _i < digitCount : _i > digitCount; i = 0 <= digitCount ? ++_i : --_i) {
         start = truncate(oldValue / Math.pow(10, digitCount - i - 1));
         end = truncate(newValue / Math.pow(10, digitCount - i - 1));

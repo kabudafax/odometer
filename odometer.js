@@ -509,6 +509,7 @@
       oldValue = this.value;
       fractionalCount = this.getFractionalDigitCount(oldValue, newValue);
       var needsLeadingZero = (newValue > -1 && newValue < 1);
+      var leadingZeros = this.countLeadingZeros(newValue);
       if (fractionalCount) {
         newValue = newValue * Math.pow(10, fractionalCount);
         oldValue = oldValue * Math.pow(10, fractionalCount);
@@ -521,7 +522,9 @@
       digits = [];
       boosted = 0;
       if (needsLeadingZero) {
-        digits.push([0]); 
+        for (var i = 0; i < leadingZeros; i++) {
+          digits.push([0]);
+        }
       }
       for (i = _i = 0; 0 <= digitCount ? _i < digitCount : _i > digitCount; i = 0 <= digitCount ? ++_i : --_i) {
         start = truncate(oldValue / Math.pow(10, digitCount - i - 1));
@@ -590,6 +593,25 @@
       if (fractionalCount) {
         return this.addSpacer(this.format.radix, this.digits[fractionalCount - 1], 'odometer-radix-mark');
       }
+    };
+
+    Odometer.prototype.countLeadingZeros = function(num) {
+      var numStr = num.toString();
+      var [integerPart, decimalPart = ''] = numStr.split('.');
+      var leadingZeros = 0;
+      if (integerPart === '0') {
+          leadingZeros = 1; 
+      }
+      
+      var decimalLeadingZeros = 0;
+      for (var i = 0; i < decimalPart.length; i++) {
+          if (decimalPart[i] === '0') {
+              decimalLeadingZeros++;
+          } else {
+              break; 
+          }
+      }
+      return leadingZeros + decimalLeadingZeros;
     };
 
     return Odometer;

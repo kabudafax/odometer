@@ -597,7 +597,9 @@
 
     Odometer.prototype.countLeadingZeros = function(num) {
       var numStr = num.toString();
-      var [integerPart, decimalPart = ''] = numStr.split('.');
+      var parts = numStr.split('.');
+      var integerPart = parts[0];
+      var decimalPart = parts[1] || '';
       var leadingZeros = 0;
       if (integerPart === '0') {
           leadingZeros = 1; 

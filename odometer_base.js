@@ -1,5 +1,5 @@
 (function() {
-  var COUNT_FRAMERATE, COUNT_MS_PER_FRAME, DIGIT_FORMAT, DIGIT_HTML, DIGIT_SPEEDBOOST, DURATION, FORMAT_MARK_HTML, FORMAT_PARSER, FRAMERATE, FRAMES_PER_VALUE, MS_PER_FRAME, MutationObserver, Odometer, RIBBON_HTML, TRANSITION_END_EVENTS, TRANSITION_SUPPORT, VALUE_HTML, addClass, createFromHTML, fractionalPart, now, removeClass, requestAnimationFrame, round, transitionCheckStyles, trigger, truncate, toFixedDigits, wrapJQuery, _jQueryWrapped, _old, _ref, _ref1,
+  var COUNT_FRAMERATE, COUNT_MS_PER_FRAME, DIGIT_FORMAT, DIGIT_HTML, DIGIT_SPEEDBOOST, DURATION, FORMAT_MARK_HTML, FORMAT_PARSER, FRAMERATE, FRAMES_PER_VALUE, MS_PER_FRAME, MutationObserver, Odometer, RIBBON_HTML, TRANSITION_END_EVENTS, TRANSITION_SUPPORT, VALUE_HTML, addClass, createFromHTML, fractionalPart, now, removeClass, requestAnimationFrame, round, transitionCheckStyles, trigger, truncate, wrapJQuery, _jQueryWrapped, _old, _ref, _ref1,
     __slice = [].slice;
 
   VALUE_HTML = '<span class="odometer-value"></span>';
@@ -92,50 +92,6 @@
   fractionalPart = function(val) {
     return val - round(val);
   };
-
-  toFixedDigits = function(num) {
-    var str = num.toString();
-
-    // 检查是否是科学计数法表示
-    if (str.indexOf('e') !== -1 || str.indexOf('E') !== -1) {
-      var match = str.match(/^(-?)(\d+)\.?(\d*)e([+-])(\d+)$/i);
-      if (match) {
-        var sign = match[1];
-        var intPart = match[2];
-        var fracPart = match[3] || '';
-        var expSign = match[4];
-        var exp = parseInt(match[5], 10);
-        
-        // 根据指数的符号和值转换为标准表示
-        if (expSign === '-') {
-          // 负指数代表小数点要向左移动
-          var zeroPadding = '';
-          for (var i = 0; i < exp - 1; i++) {
-            zeroPadding += '0';
-          }
-          var allDigits = intPart + fracPart;
-          // 加上符号，0.，必要的前导零，然后是数字
-          return sign + '0.' + zeroPadding + allDigits;
-        } else {
-          // 正指数代表小数点向右移动
-          var allDigits = intPart + fracPart;
-          var newIntLength = parseInt(intPart.length) + exp;
-          if (allDigits.length <= newIntLength) {
-            // 在末尾添加零
-            for (var i = allDigits.length; i < newIntLength; i++) {
-              allDigits += '0';
-            }
-            return sign + allDigits;
-          } else {
-            // 需要在中间插入小数点
-            return sign + allDigits.substring(0, newIntLength) + '.' + allDigits.substring(newIntLength);
-          }
-        }
-      }
-    }
-
-    return str;
-  }
 
   _jQueryWrapped = false;
 
@@ -362,7 +318,6 @@
     };
 
     Odometer.prototype.formatDigits = function(value) {
-      value = toFixedDigits(value)
       var digit, valueDigit, valueString, wholePart, _i, _j, _len, _len1, _ref, _ref1;
       this.digits = [];
       if (this.options.formatFunction) {
@@ -552,8 +507,6 @@
     Odometer.prototype.animateSlide = function(newValue) {
       var boosted, cur, diff, digitCount, digits, dist, end, fractionalCount, frame, frames, i, incr, j, mark, numEl, oldValue, start, _base, _i, _j, _k, _l, _len, _len1, _len2, _m, _ref, _results;
       oldValue = this.value;
-      newValue = toFixedDigits(newValue);
-
       fractionalCount = this.getFractionalDigitCount(oldValue, newValue);
       var needsLeadingZero = (newValue > -1 && newValue < 1);
       var leadingZeros = this.countLeadingZeros(newValue);
@@ -573,7 +526,6 @@
           digits.push([0]);
         }
       }
-
       for (i = _i = 0; 0 <= digitCount ? _i < digitCount : _i > digitCount; i = 0 <= digitCount ? ++_i : --_i) {
         start = truncate(oldValue / Math.pow(10, digitCount - i - 1));
         end = truncate(newValue / Math.pow(10, digitCount - i - 1));

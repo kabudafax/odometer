@@ -38,7 +38,8 @@
 
   setInterval(function(){
     for(var i=0; i < odometers.length; i++)
-      odometers[i].update((Math.random() * 10000000)|0);
+      // odometers[i].update((Math.random() * 10000000)|0);
+      odometers[i].update('0.00000002600');
   }, 3000);
 
 
@@ -52,7 +53,8 @@
 
     var od = new Odometer({
       el: el,
-      value: 0
+      value: 0,
+      format: '(d).dddddddd'
     });
 
     return od;
@@ -75,5 +77,6 @@
     }
   }
 
-  updateOdometerCount(16);
+  // updateOdometerCount(16);
+  updateOdometerCount(1);
 </script>

@@ -382,6 +382,17 @@
       } else {
         wholePart = !this.format.precision || !fractionalPart(value) || false;
         _ref1 = value.toString().split('').reverse();
+
+        // Add zeros based on precision
+        var parts = value.toString().split('.');
+        var decimalPart = parts[1] || '';
+        if (decimalPart.length > 0 && this.format.precision > 0 && decimalPart.length < this.format.precision) {
+          var zerosToAdd = this.format.precision - decimalPart.length;
+          for (var i = 0; i < zerosToAdd; i++) {
+            _ref1.unshift('0');
+          }
+        }
+
         for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
           digit = _ref1[_j];
           if (digit === '.') {
@@ -554,6 +565,10 @@
       oldValue = this.value;
       newValue = toFixedDigits(newValue);
 
+       // Add zeros based on precision
+       var parts = newValue.toString().split('.');
+       var decimalPart = parts[1] || '';
+
       fractionalCount = this.getFractionalDigitCount(oldValue, newValue);
       var needsLeadingZero = (newValue > -1 && newValue < 1);
       var leadingZeros = this.countLeadingZeros(newValue);
@@ -603,6 +618,15 @@
         }
         digits.push(frames);
       }
+     
+      // Add trailing zeros based on precision
+      if (decimalPart.length > 0 && this.format.precision > 0 && decimalPart.length < this.format.precision) {
+        var zerosToAdd = this.format.precision - decimalPart.length;
+        for (var i = 0; i < zerosToAdd; i++) {
+          digits.push([0]);
+        }
+      }
+
       this.resetDigits();
       _ref = digits.reverse();
       for (i = _l = 0, _len1 = _ref.length; _l < _len1; i = ++_l) {
@@ -639,7 +663,7 @@
         mark.parent.removeChild(mark);
       }
       if (fractionalCount) {
-        return this.addSpacer(this.format.radix, this.digits[fractionalCount - 1], 'odometer-radix-mark');
+        return this.addSpacer(this.format.radix, this.digits[fractionalCount - 1 + (zerosToAdd || 0)], 'odometer-radix-mark');
       }
     };
 
